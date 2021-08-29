@@ -6,7 +6,6 @@
  */
 #pragma once
 #include <map>
-#include <new>
 #include <vector>
 #include <string>
 #include "help.hpp"
@@ -22,7 +21,7 @@ class Exit_signal{
 
 };
 
-static std::map<std::string, unsigned int> commands{
+static const std::map<std::string, unsigned int> commands{
 			{"carga_divipola", 0},
 			{"listar_departamentos", 1 },
 			{"listar_municipios",2  },
@@ -56,7 +55,9 @@ void executeCommand(const std::vector<std::string> & tokens,std::list<Department
 			listar_municipios(stoi(tokens[1]),dpto);
 			break;
 		case 3:
-			listar_poblaciones();
+			if(tokens.size()!=2)
+				throw Interpreter_exception("Invalid arguments for [listar municipios]");
+			listar_poblaciones(stoi(tokens[1]),dpto);
 			break;
 		case 4:
 			info_sumaria();

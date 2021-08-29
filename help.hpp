@@ -1,7 +1,7 @@
 /**
  * @file help.hpp
  * @brief 
- * Relacionado con toda la ayuda de comands y demás 
+ * Relacionado con toda la ayuda de comandos y demás 
  */
 #pragma once
 #include <iostream>
