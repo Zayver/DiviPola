@@ -6,6 +6,7 @@
  */
 #pragma once
 #include <map>
+#include <sys/types.h>
 #include <vector>
 #include <string>
 #include "help.hpp"
@@ -35,7 +36,7 @@ static const std::map<std::string, unsigned int> commands{
 		};
 
 //este comando tendría que recibir TODO lo que todas las funciones harían D:
-void executeCommand(const std::vector<std::string> & tokens,std::list<Department>&dpto){
+void executeCommand(const std::vector<std::string> & tokens,mapper&dpto){
 	if(tokens[0].empty())
 		return;
 	switch (commands.at(tokens[0])) {
@@ -89,7 +90,7 @@ void executeCommand(const std::vector<std::string> & tokens,std::list<Department
 }
 inline void interpreter(){
 	std::string command; bool __exit=false; std::vector<std::string> tokens;
-	std::list<Department> dpto;
+	mapper dpto;
 	cout<<"Interprete de comandos DIVIPOLA\n";
 	do{
 		cout<<"divipola $ ";

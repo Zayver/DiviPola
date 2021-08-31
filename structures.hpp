@@ -6,41 +6,29 @@
  */
 #pragma once
 #include <string>
-#include <list>
+#include <map>
 struct CP{
-	unsigned int code;
 	std::string name;
-	CP(const unsigned int code, const std::string n):name(n){
-		this->code=code;
+	double latitude;
+	double longitude;
+	CP(const std::string &n,const double & l1, const double &l2 ):name(n){
+		latitude=l1, longitude=l2;
 	}
 };
 struct CM{
-	//puede que lleve mas cosas pero no entiendo eso bien
-	unsigned int code;
 	std::string name;
-	std::list<CP>cp;
+	std::map<unsigned int, CP>cp;
+	double latitude;
+	double longitude;
 	unsigned int population;
-	CM(const unsigned int code, const std::string n): name(n), cp(){
-		this->code=code;
-	}
-	void insertCP(const unsigned int code, const std::string name){
-		cp.emplace_back(code, name);
+	CM(const std::string &n, const double & l1=0, const double &l2=0): name(n), cp(){
+		latitude=l1, longitude=l2;
 	}
 };
 struct Department{
-	unsigned int code; // no se si dejarlo como string
 	std::string name;
-	std::list<CM> cm;
-	Department(const unsigned int code, const std::string n)
-	:name(n), cm(){
-		this->code=code;
-	}
-	
-	auto getLastCM(){
-		return cm.back();
+	std::map<unsigned int, CM> cm;
+	Department(const std::string n):name(n), cm(){
 	}
 	
 };
-bool operator ==(const Department &dpto, const unsigned int & code){
-		return dpto.code==code;
-}
