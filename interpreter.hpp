@@ -18,9 +18,7 @@ class Interpreter_exception : public std::exception{
 	Interpreter_exception(const char* d): info(d){}
 	const char* what() const noexcept{return this->info.c_str();}
 };
-class Exit_signal{
-
-};
+class Exit_signal{};
 
 static const std::map<std::string, unsigned int> commands{
 			{"carga_divipola", 0},
@@ -44,8 +42,6 @@ void executeCommand(const std::vector<std::string> & tokens,mapper&dpto){
 			if(tokens.size()!=2)
 				throw Interpreter_exception("Invalid arguments for [carga_divipola]");
 			carga_divipola(tokens[1], dpto);
-			if(dpto.empty())
-				throw std::bad_alloc();
 			break;
 		case 1:
 			listar_departamentos(dpto);
@@ -116,3 +112,4 @@ inline void interpreter(){
 		cout<<'\n';
 	}while(!__exit);
 }
+

@@ -7,6 +7,8 @@
 #pragma once
 #include <string>
 #include <map>
+
+
 struct CP{
 	std::string name;
 	double latitude;
@@ -14,6 +16,11 @@ struct CP{
 	CP(const std::string &n,const double & l1, const double &l2 ):name(n){
 		latitude=l1, longitude=l2;
 	}
+};
+struct ANM{
+	std::string name;
+	std::map<unsigned int, CP> anm_cp;
+	ANM(const std::string& n): name(n){}
 };
 struct CM{
 	std::string name;
@@ -28,7 +35,8 @@ struct CM{
 struct Department{
 	std::string name;
 	std::map<unsigned int, CM> cm;
-	Department(const std::string n):name(n), cm(){
+	std::map<unsigned int, ANM> anm;
+	Department(const std::string n):name(n), cm(), anm(){
 	}
 	
 };
