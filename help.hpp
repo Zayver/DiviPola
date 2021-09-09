@@ -65,6 +65,7 @@ void help(const std::string & command){
 }
 void help(){
 	cout<<"Lista de comandos disponibles:\n\n";
+		cout<<"! comando previo\n";
 		cout<<"carga_divipola\n";
 		cout<<"listar_departamentos\n";
 		cout<<"listar_municipios\n";
