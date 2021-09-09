@@ -221,6 +221,8 @@ void info_sumaria(const unsigned int &code, const mapper &dpto) {
           << search->second.anm.size() << " areas no municipalizadas";
 }
 void carga_SC(const std::string &file_name, mapper &dpto) {
+	if(dpto.empty())
+		throw Command_exp("[carga_SC]: No se ha cargado la divipola");
      std::ifstream file(file_name);
      if (!file.good())
           throw Command_exp("[carga_SC]: No se pudo cargar el archivo "
@@ -248,8 +250,8 @@ void carga_SC(const std::string &file_name, mapper &dpto) {
                n_dp = n_actualdpto;
           }
           auto actual_cm = actual_dpto->second.cm.find(stoi(tokens[4]));
-          if (actual_cm == actual_dpto->second.cm.end() && (tokens[3].find("(ANM)")==std::string::npos)) {
-               cout << "No hay datos de SC para " << tokens[3] << '\n';
+          if (actual_cm == actual_dpto->second.cm.end()) {
+               //el municipio no existe en la divipola o es un ANM que por defecto no pertenece al SC
                continue;
           }
           if (tokens[0] == "Fuera SC") {

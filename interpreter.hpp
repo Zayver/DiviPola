@@ -122,7 +122,8 @@ inline void interpreter() {
           } catch (Command_exp e) {
                cout << "Command error: " << e.what() << '\n';
           }
-		prev_command=tokens[0];
+		if(!__exit)
+			prev_command=tokens[0];
           cout << '\n';
      } while (!__exit);
 }
