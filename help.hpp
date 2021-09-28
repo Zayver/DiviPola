@@ -8,7 +8,7 @@
 #include <string>
 using std::cout;
 
-void help(const std::string & command){
+static void help(const std::string & command){
 	if(command=="carga_divipola"){
 		cout<<"Carga en una o más estructuras de datos en memoria el \n \
 		contenido del archivo identificado por nombre_archivo\n";
@@ -21,7 +21,7 @@ void help(const std::string & command){
 
 	}
 	else if(command=="listar_municipios"){
-		cout<<"Imprime la informacion del dpto cargado en memoria indicado por el id\n";
+		cout<<"Imprime la información del dpto cargado en memoria indicado por el id\n";
 		cout<<"Sintaxis [listar_municipios] [codigo dpto]\n";
 
 	}
@@ -31,13 +31,13 @@ void help(const std::string & command){
 
 	}
 	else if(command=="info_sumaria"){
-		cout<<"Imprime la informacion basica (nombre, municipios, centros poblados) \n";
+		cout<<"Imprime la información básica (nombre, municipios, centros poblados) \n";
 		cout<<"Sintaxis [info_sumaria] [codigo dpto]\n";
 
 	}
 	else if(command=="carga_SC"){
-		cout<<"Carga en memoria el contenido del archivo proporciodado\n \
-		con la info basica para el sistema de ciudades\n";
+		cout<<"Carga en memoria el contenido del archivo proporcionado\n \
+		con la info básica para el sistema de ciudades\n";
 		cout<<"Sintaxis [carga_divipola] [nombre de archivo]\n";
 
 	}
@@ -58,12 +58,11 @@ void help(const std::string & command){
 
 	}
 	else{
-		
 		cout<<"Comando desconocido, use [help] para ver comandos\n";
 	}
 
 }
-void help(){
+static void help(){
 	cout<<"Lista de comandos disponibles:\n\n";
 		cout<<"! comando previo\n";
 		cout<<"carga_divipola\n";

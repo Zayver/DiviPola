@@ -8,6 +8,12 @@
 #include <map>
 #include <string>
 
+#ifdef _WIN32
+	#include <windows.h>
+	#define clearscreen() system("cls")
+#else
+	#define clearscreen() system("clear");
+#endif
 struct CP {
      std::string name;
      double latitude;

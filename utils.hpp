@@ -9,13 +9,9 @@
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
-#define clearscreen() system("cls")
-#else
-#define clearscreen() system("clear");
-#endif
 
-std::string trim(const std::string &input) {
+
+static std::string trim(const std::string &input) {
 
      std::string output;
      std::unique_copy(input.begin(), input.end(),
@@ -32,7 +28,7 @@ std::string trim(const std::string &input) {
      return output;
 }
 
-std::vector<std::string> tokenize(std::string s, const std::string del = " ",
+static std::vector<std::string> tokenize(std::string s, const std::string del = " ",
                                   const char dlim = '\"') {
      std::vector<std::string> tokens;
      int start = 0, end = s.find(del);
@@ -49,10 +45,4 @@ std::vector<std::string> tokenize(std::string s, const std::string del = " ",
      tokens.emplace_back(s.substr(start, end - start));
      return tokens;
 }
-bool absent(std::vector<int> vec, int x) {
-     for (auto t : vec) {
-          if (x == t)
-               return false;
-     }
-     return true;
-}
+

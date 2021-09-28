@@ -6,10 +6,12 @@
 #pragma once
 #include "structures.hpp"
 #include "utils.hpp"
+#include "printer.hpp"
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -24,7 +26,7 @@ class Command_exp : public std::exception {
      const char *what() const noexcept { return info.c_str(); }
 };
 
-void carga_divipola(const std::string &filename, mapper &dpto) {
+static void carga_divipola(const std::string &filename, mapper &dpto) {
      std::ifstream file(filename);
 
      // apertura incorrecta
@@ -33,7 +35,7 @@ void carga_divipola(const std::string &filename, mapper &dpto) {
                             "correctamente, errores en la carga");
      // mirar si el archivo esta vacio
      if (file.peek() == std::ifstream::traits_type::eof())
-          throw Command_exp("[carga_divipola]: Archivo vacio, imposible cargar "
+          throw Command_exp("[carga_divipola]: Archivo vacío, imposible cargar "
                             "elementos en memoria");
 
      std::string buffer;
@@ -111,7 +113,7 @@ void carga_divipola(const std::string &filename, mapper &dpto) {
                                                   stod(tokens[8])));
                          }
 
-                              
+
                          totalp++;
 
                          line_pos = file.tellg();
@@ -133,20 +135,17 @@ void carga_divipola(const std::string &filename, mapper &dpto) {
      cout << "Correcto,se cargaron: \n";
      cout << "\t" << dpto.size() - 1 << "   Departamentos\n";
      cout << "\t" << totalm << "   Municipios\n";
-     cout << "\t" << totalanm << "   Areas no municipalizadas\n";
+     cout << "\t" << totalanm << "   áreas no municipalizadas\n";
      cout << "\t" << totalp << "   Centros poblados\n";
 }
-
-void listar_departamentos(const mapper &dpto) {
+static void listar_departamentos(const mapper &dpto) {
      if (dpto.empty())
           throw Command_exp("[listar_departamentos]: No hay dptos en memoria");
-     cout << "Departamentos de la republica de Colombia:\n";
-     cout << "Cantidad cargada: " << dpto.size() << "\n\n";
-     for (auto &temp : dpto) {
-          cout << temp.first << "---" << temp.second.name << '\n';
-     }
+     std::stringstream head; head << "Departamentos de la república de Colombia:\n"
+		 << "Cantidad cargada: " << dpto.size() << "\n\n";
+	printer::printMap(dpto, head.str());
 }
-void listar_municipios(const unsigned int &code, const mapper &dpto) {
+static void listar_municipios(const unsigned int &code, const mapper &dpto) {
      auto d = dpto.find(code);
      // retorna end incluso si no encuentra entonces chequear:
      if (d == dpto.end())
@@ -155,20 +154,18 @@ void listar_municipios(const unsigned int &code, const mapper &dpto) {
           throw Command_exp(
               "[listar_municipios]: Dpto sin municipios cargados");
 
-     cout << "Municipios del departamento: " << d->second.name << '\n';
+     std::stringstream head; head << "Municipios del departamento: " << d->second.name << '\n';
      cout << "Cantidad: " << d->second.cm.size() << "\n\n";
-     for (auto &temp : d->second.cm) {
-          cout << temp.first << "---" << temp.second.name <<'\n';
-     }
+
+	printer::printMap(d->second.cm, head.str()); 
      if (!d->second.anm.empty()) {
-          cout << "El departamento posee " << d->second.anm.size()
-               << " areas no municipalizadas\n";
-          for (auto &temp : d->second.anm) {
-               cout << temp.first << "---" << temp.second.name <<'\n';
-          }
+          head << "El departamento posee " << d->second.anm.size()
+               << " áreas no municipalizadas\n";
+
+		printer::printMap(d->second.anm, head.str());
      }
 }
-void listar_poblaciones(const unsigned int &code, const mapper &dpto) {
+static void listar_poblaciones(const unsigned int &code, const mapper &dpto) {
      /*   para reducir la complejidad de busqueda
              dado que los id son:
              depto---CM---CP
@@ -181,6 +178,7 @@ void listar_poblaciones(const unsigned int &code, const mapper &dpto) {
 
      // buscar municipio
      auto search2 = search->second.cm.find(code);
+	std::stringstream head; 
      if (search2 == search->second.cm.end()) {
           // si no existe como municipio buscar ANM
           auto search3 = search->second.anm.find(code);
@@ -189,22 +187,21 @@ void listar_poblaciones(const unsigned int &code, const mapper &dpto) {
           }
 
           // aca encuentra anm entonces
-          cout << "Poblaciones area no municipalizada de: "
-               << search3->second.name << '\n';
-          cout << "Cantidad: " << search3->second.anm_cp.size() << "\n\n";
-          for (auto &aux : search3->second.anm_cp) {
-               cout << aux.first << "---" << aux.second.name <<'\n';
-          }
+          head << "Poblaciones area no municipalizada de: "
+               << search3->second.name << '\n'
+     		<< "Cantidad: " << search3->second.anm_cp.size() << "\n\n";
+		printer::printMap(search3->second.anm_cp, head.str());
+          
           return;
      }
 
-     cout << "Poblaciones municipio de: " << search2->second.name << '\n';
-     cout << "Cantidad: " << search2->second.cp.size() << "\n\n";
-     for (auto &aux : search2->second.cp) {
-          cout << aux.first << "---" << aux.second.name << '\n';
-     }
+     head << "Poblaciones municipio de: " << search2->second.name << '\n'
+		<< "Cantidad: " << search2->second.cp.size() << "\n\n";
+
+	printer::printMap(search2->second.cp, head.str());
+
 }
-void info_sumaria(const unsigned int &code, const mapper &dpto) {
+static void info_sumaria(const unsigned int &code, const mapper &dpto) {
      if (dpto.empty())
           throw Command_exp("[info_sumaria]: No hay dptos en memoria");
      auto search = dpto.find(code);
@@ -214,13 +211,13 @@ void info_sumaria(const unsigned int &code, const mapper &dpto) {
      unsigned int c = 0;
      for (auto &temp : search->second.cm) {
           c += temp.second.cp.size();
-     }
+     }//contar la poblacion por si despues
      cout << "El departamento " << search->second.name
-          << " esta conformado por " << m << " municipios, " << c
+          << " está conformado por " << m << " municipios, " << c
           << " centros poblados y \n"
-          << search->second.anm.size() << " areas no municipalizadas";
+          << search->second.anm.size() << " áreas no municipalizadas";
 }
-void carga_SC(const std::string &file_name, mapper &dpto) {
+static void carga_SC(const std::string &file_name, mapper &dpto) {
 	if(dpto.empty())
 		throw Command_exp("[carga_SC]: No se ha cargado la divipola");
      std::ifstream file(file_name);
@@ -228,7 +225,7 @@ void carga_SC(const std::string &file_name, mapper &dpto) {
           throw Command_exp("[carga_SC]: No se pudo cargar el archivo "
                             "correctamente, errores en la carga");
      if (file.peek() == std::ifstream::traits_type::eof())
-          throw Command_exp("[carga_SC]: Archivo vacio, imposible cargar "
+          throw Command_exp("[carga_SC]: Archivo vacío, imposible cargar "
                             "elementos en memoria");
      std::string buffer;
      std::vector<std::string> tokens(7); // alocar 7 elementos ya que esta es la
@@ -242,7 +239,7 @@ void carga_SC(const std::string &file_name, mapper &dpto) {
           tokens = tokenize(buffer, ",");
 		if(tokens.size()<5)
 			break;
-          int n_actualdpto = stoi(tokens[4]);
+          uint n_actualdpto = stoi(tokens[4]);
           auto actual_dpto = dpto.find(
               n_actualdpto / 1000); // aumiendo que no haya errores en el archivo
           if (n_actualdpto != n_dp) {
@@ -264,11 +261,11 @@ void carga_SC(const std::string &file_name, mapper &dpto) {
      }
      cout << "Se cargaron correctamente " << totald << '\n'
           << "En sistema de ciudades: " << totalSC << '\n'
-          << "Fuera del Sistema de ciudades: " << totalnSC << '\n'
-          << "Total: " << totalSC + totalnSC << '\n';
+          << "Fuera del Sistema de ciudades: " << totalnSC<<'\n'
+          << "Total (sin ANM): " << totalSC + totalnSC << '\n';
      file.close();
 }
-void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
+static void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
      auto search2 = dpto.find(code / 1000);
      if (search2 == dpto.end()) {
           throw Command_exp("[esta_en_sistema]: Departamento Inexistente");
@@ -277,7 +274,7 @@ void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
      if (search == search2->second.cm.end()) {
 		auto search3= search2->second.anm.find(code);
 		if(search3 != search2->second.anm.end()){
-			cout<<"Area no municipalizada no pertenece al SC\n";
+			cout<<"[esta_en_sistema]: Área no municipalizada no pertenece al SC\n";
 			return;
 		}
           throw Command_exp(

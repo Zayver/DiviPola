@@ -10,7 +10,6 @@
 #include "utils.hpp"
 #include <map>
 #include <string>
-#include <sys/types.h>
 #include <vector>
 class Interpreter_exception : public std::exception {
      std::string info;
@@ -34,7 +33,7 @@ static const std::map<std::string, unsigned int> commands{
     {"help", 9}};
 
 // este comando tendría que recibir TODO lo que todas las funciones harían D:
-void executeCommand(const std::vector<std::string> &tokens, mapper &dpto) {
+static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto) {
      if (tokens[0].empty())
           return;
      switch (commands.at(tokens[0])) {
