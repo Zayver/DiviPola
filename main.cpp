@@ -13,8 +13,9 @@ int main(){
 	#ifdef _WIN32
 		SetConsoleOutputCP( 65001 ); //65001 significa utf-8 en regedit de windows 
 	#endif
+	
 	clearscreen();
 	interpreter();
 	clearscreen();
 	return 0;
-}
+}	

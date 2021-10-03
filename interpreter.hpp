@@ -6,6 +6,7 @@
  */
 #pragma once
 #include "commands.hpp"
+#include "commands2.hpp"
 #include "help.hpp"
 #include "utils.hpp"
 #include <map>
@@ -30,7 +31,14 @@ static const std::map<std::string, unsigned int> commands{
     {"esta_en_sistema", 6},
     {"salir", 7},
     {"clear", 8},
-    {"help", 9}};
+    {"help", 9},
+    {"componente1", 10},
+    {"componente2", 11},
+    {"componente3", 12},
+    {"componente4", 13},
+    {"reporte", 14},
+    {"codificar", 15},
+    {"decodificar", 16}};
 
 // este comando tendría que recibir TODO lo que todas las funciones harían D:
 static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto) {
@@ -88,6 +96,25 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto)
                help();
           }
           break;
+	case 10:
+		break;
+	case 11:
+		break;
+	case 12:
+		break;
+	case 13:
+		break;
+
+	case 14:
+		break;
+
+	case 15:
+		break;
+
+	case 16:
+		break;
+
+	
      default:
           help();
           break;
