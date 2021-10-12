@@ -7,13 +7,24 @@
 #pragma once
 #include <map>
 #include <string>
-
+//quitar
+#include <iostream>
 #ifdef _WIN32
 	#include <windows.h>
 	#define clearscreen() system("cls")
 #else
 	#define clearscreen() system("clear");
 #endif
+
+class Command_exp : public std::exception {
+     std::string info;
+
+   public:
+     Command_exp(const char *i) : info{i} {}
+     const char *what() const noexcept { return info.c_str(); }
+};
+
+
 struct CP {
      std::string name;
      double latitude;
@@ -34,9 +45,10 @@ struct CM {
      double latitude;
      double longitude;
      unsigned int population;
-     int sc;
+     int sc; //0 no tiene info, 1 no esta en sc y 2 si esta
+	std::string SC_name;
      CM(const std::string &n, const double &l1 = 0, const double &l2 = 0)
-         : name(n), cp() {
+         : name(n), cp(), SC_name() {
           latitude = l1, longitude = l2;
      }
 };
@@ -45,4 +57,31 @@ struct Department {
      std::map<unsigned int, CM> cm;
      std::map<unsigned int, ANM> anm;
      Department(const std::string n) : name(n), cm(), anm() {}
+};
+
+//parte 2
+
+struct uninodalCity{
+	CM *id;
+	
+
+};
+struct urbanAgglomeration{
+	CM* id;
+	std::map<uint, uninodalCity>ucities;
+	urbanAgglomeration(CM *cm){
+		id = cm;
+	} 
+
+};
+
+
+struct SC{
+	std::map<std::string, urbanAgglomeration> city_system;
+	
+	SC(): city_system(){
+	}
+	
+
+	
 };

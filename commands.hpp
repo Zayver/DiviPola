@@ -7,24 +7,16 @@
 #include "structures.hpp"
 #include "utils.hpp"
 #include "printer.hpp"
-#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <sstream>
-#include <string>
 #include <vector>
 
 using std::cout;
 using mapper = std::map<unsigned int, Department>;
 
-class Command_exp : public std::exception {
-     std::string info;
 
-   public:
-     Command_exp(const char *i) : info{i} {}
-     const char *what() const noexcept { return info.c_str(); }
-};
 
 static void carga_divipola(const std::string &filename, mapper &dpto) {
      std::ifstream file(filename);
@@ -256,8 +248,10 @@ static void carga_SC(const std::string &file_name, mapper &dpto) {
                totalnSC++;
           } else {
                actual_cm->second.sc = 2;
+			actual_cm->second.SC_name= tokens[0];
                totalSC++;
           }
+		actual_cm->second.population= std::stoi(tokens[6]);
      }
      cout << "Se cargaron correctamente " << totald << '\n'
           << "En sistema de ciudades: " << totalSC << '\n'
@@ -289,4 +283,12 @@ static void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
           if (search->second.sc == 2)
                cout << " hace parte del sistema de ciudades\n";
      }
+}
+
+static void test(const mapper & dpto, const SC & sc){
+	cout<<"TEST\n"; 
+	for(auto & temp: sc.city_system){
+
+		cout<< temp.first<<"-----"<<temp.second.id<<'\n'; 
+	}
 }

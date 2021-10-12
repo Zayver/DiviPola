@@ -22,6 +22,8 @@ class Interpreter_exception : public std::exception {
 class Exit_signal {};
 
 static const std::map<std::string, unsigned int> commands{
+	{"test",99},
+	{"quick",100},
     {"carga_divipola", 0},
     {"listar_departamentos", 1},
     {"listar_municipios", 2},
@@ -40,11 +42,21 @@ static const std::map<std::string, unsigned int> commands{
     {"codificar", 15},
     {"decodificar", 16}};
 
+
+
+
 // este comando tendría que recibir TODO lo que todas las funciones harían D:
-static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto) {
+static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto, SC & sc) {
      if (tokens[0].empty())
           return;
      switch (commands.at(tokens[0])) {
+	case 99:
+		test(dpto, sc);
+		break;
+	case 100:
+		carga_divipola("Divipola.csv", dpto);
+		carga_SC("SistemaCiudades.csv", dpto);
+		break;
      case 0:
           if (tokens.size() != 2)
                throw Interpreter_exception(
@@ -96,7 +108,9 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto)
                help();
           }
           break;
+	//parte 2 incluidas en commands2.hpp
 	case 10:
+		componente1(sc,dpto);
 		break;
 	case 11:
 		break;
@@ -124,7 +138,8 @@ inline void interpreter() {
      std::string command, prev_command="";
      bool __exit = false;
      std::vector<std::string> tokens;
-     mapper dpto;
+     mapper dpto; //departamentos 
+	SC sc; //sistema de ciudades
      cout << "Interprete de comandos DIVIPOLA\n";
      do {
           cout << "divipola $ ";
@@ -138,7 +153,7 @@ inline void interpreter() {
 		}
 			
           try {
-               executeCommand(tokens, dpto);
+               executeCommand(tokens, dpto, sc);
           } catch (Interpreter_exception e) {
                cout << "ERROR: " << e.what() << '\n';
           } catch (std::out_of_range e) {

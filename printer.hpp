@@ -2,10 +2,7 @@
 #include "structures.hpp"
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
-#include <ios>
 #include <iostream>
-#include <iterator>
 #include <map>
 #include <sstream>
 #include <string>
