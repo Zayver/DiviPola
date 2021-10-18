@@ -289,6 +289,6 @@ static void test(const mapper & dpto, const SC & sc){
 	cout<<"TEST\n"; 
 	for(auto & temp: sc.city_system){
 
-		cout<< temp.first<<"-----"<<temp.second.id<<'\n'; 
+		cout<< temp.first<<"-----"<<temp.second.cm.size()<<'\n'; 
 	}
-}
+} 	

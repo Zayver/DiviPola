@@ -7,8 +7,7 @@
 #pragma once
 #include <map>
 #include <string>
-//quitar
-#include <iostream>
+#include <set>
 #ifdef _WIN32
 	#include <windows.h>
 	#define clearscreen() system("cls")
@@ -67,11 +66,11 @@ struct uninodalCity{
 
 };
 struct urbanAgglomeration{
-	CM* id;
-	std::map<uint, uninodalCity>ucities;
-	urbanAgglomeration(CM *cm){
-		id = cm;
-	} 
+	std::set<CM> cm;
+	
+	urbanAgglomeration(){
+		
+	}
 
 };
 

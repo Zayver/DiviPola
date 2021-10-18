@@ -1,3 +1,11 @@
+/**
+ * @file printer.hpp
+ * @brief Utilidad para imprimir en pantalla
+ * Puede recibir como un map para impresion
+ * O una string o un flujo de string para evitar desperdicio de
+ * memoria, pagina automaticamente con parametros por defecto cambiables
+ * 
+ */
 #pragma once
 #include "structures.hpp"
 #include <algorithm>
