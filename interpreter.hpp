@@ -34,13 +34,12 @@ static const std::map<std::string, unsigned int> commands{
     {"salir", 7},
     {"clear", 8},
     {"help", 9},
-    {"componente1", 10},
-    {"componente2", 11},
-    {"componente3", 12},
-    {"componente4", 13},
-    {"reporte", 14},
-    {"codificar", 15},
-    {"decodificar", 16}};
+    {"aglomeracion", 10},
+    {"uninodal", 11},
+    {"capital_menor", 12},
+    {"reporte", 13},
+    {"codificar", 14},
+    {"decodificar", 15}};
 
 
 
@@ -51,7 +50,7 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
           return;
      switch (commands.at(tokens[0])) {
 	case 99:
-		test(dpto, sc);
+		test(sc);
 		break;
 	case 100:
 		carga_divipola("Divipola.csv", dpto);
@@ -110,9 +109,10 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
           break;
 	//parte 2 incluidas en commands2.hpp
 	case 10:
-		componente1(sc,dpto);
+		aglomeracion(sc,dpto);
 		break;
 	case 11:
+		uninodal(sc, dpto);
 		break;
 	case 12:
 		break;

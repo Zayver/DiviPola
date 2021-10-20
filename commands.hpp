@@ -247,7 +247,19 @@ static void carga_SC(const std::string &file_name, mapper &dpto) {
                actual_cm->second.sc = 1;
                totalnSC++;
           } else {
-               actual_cm->second.sc = 2;
+			//!entrega 2 mirar que es:
+			if(tokens[1] == "Centro aglomeración"){
+				actual_cm->second.sc = 2;
+			}
+			else if(tokens[1] == "Uninodal"){
+				actual_cm->second.sc = 3;
+			}
+			else if (stoi(tokens[6]) <100000){
+				actual_cm->second.sc = 4;
+			}
+			else
+				actual_cm->second.sc = 5;
+               
 			actual_cm->second.SC_name= tokens[0];
                totalSC++;
           }
@@ -280,15 +292,13 @@ static void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
                cout<<" no contiene info del SC cargado en memoria\n";
           if (search->second.sc == 1)
                cout << " no hace parte del sistema de ciudades\n";
-          if (search->second.sc == 2)
+          if (search->second.sc >= 2)
                cout << " hace parte del sistema de ciudades\n";
      }
 }
 
-static void test(const mapper & dpto, const SC & sc){
-	cout<<"TEST\n"; 
-	for(auto & temp: sc.city_system){
-
-		cout<< temp.first<<"-----"<<temp.second.cm.size()<<'\n'; 
+static void test(const SC & sc){
+	for(auto & temp: sc.agglomerations){
+		cout<<temp.first<<'\n';
 	}
 } 	

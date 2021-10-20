@@ -45,7 +45,12 @@ struct CM {
      double longitude;
      unsigned int population;
      int sc; //0 no tiene info, 1 no esta en sc y 2 si esta
+	//entrega 2 cambia 0 no tiene info, 1 no esta en sc 
+	//>1 si esta con:
+	// 2 centro de aglomeracion, 3 uninodal, 4 capital menor
+	// 5 normal o desconocida
 	std::string SC_name;
+	CM(){}
      CM(const std::string &n, const double &l1 = 0, const double &l2 = 0)
          : name(n), cp(), SC_name() {
           latitude = l1, longitude = l2;
@@ -60,27 +65,18 @@ struct Department {
 
 //parte 2
 
-struct uninodalCity{
-	CM *id;
-	
-
-};
 struct urbanAgglomeration{
-	std::set<CM> cm;
-	
-	urbanAgglomeration(){
-		
-	}
+	std::map<std::string, CM> ordinary;
+	std::map<std::string, CM> minor_capital;
+	CM center;
 
+	urbanAgglomeration(): ordinary(), minor_capital(), center(){
+	}
 };
 
 
 struct SC{
-	std::map<std::string, urbanAgglomeration> city_system;
-	
-	SC(): city_system(){
-	}
-	
-
-	
+	std::map<std::string, urbanAgglomeration> agglomerations;
+	std::map<std::string, CM> uninodal;
+	SC(): agglomerations(){}
 };
