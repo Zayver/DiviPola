@@ -18,4 +18,4 @@ int main(){
 	interpreter();
 	clearscreen();
 	return 0;
-}	
+}

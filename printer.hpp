@@ -68,8 +68,10 @@ static void print(const std::string &str, const uint perPage = 8) {
 static void print(std::stringstream &stream, const uint &perPage = 8,
                   const std::string &head = std::string(25, '-'),
                   const std::string &tail = std::string(25, '-')) {
-     uint new_lines = std::count(std::istreambuf_iterator<char>(stream),
-                                 std::istreambuf_iterator<char>(), '\n');
+
+	
+     uint new_lines= std::count(std::istreambuf_iterator<char>(stream),std::istreambuf_iterator<char>(), '\n');
+		
      stream.seekg(std::ios::beg);
      if (new_lines > perPage) {
           uint pages = ceil((float)new_lines / perPage);

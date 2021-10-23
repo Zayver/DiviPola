@@ -6,7 +6,6 @@
 #pragma once
 #include "printer.hpp"
 #include "structures.hpp"
-#include <cstdio>
 #include <iostream>
 #include <sstream>
 using std::cout;

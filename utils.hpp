@@ -8,7 +8,8 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-
+#include <sstream>
+#include <iomanip>
 
 
 static std::string trim(const std::string &input) {
@@ -46,3 +47,30 @@ static std::vector<std::string> tokenize(std::string s, const std::string del = 
      return tokens;
 }
 
+std::stringstream createTable(std::stringstream & stream, uint columns, std::string del = ","){
+	//!EL STREAM NO DEBE TERMINAR CON UN SALTO DE LINEA PORQUE SI NO 
+	//!SE IMPRIME UNA FILA DE MAS
+	std::stringstream table;
+	std::string buffer_tok;
+	uint cell_s= 30; //por defecto aceptaria 30 
+	uint cell_space = cell_s*columns+5;
+	table<<std::setfill('-')<<std::setw(cell_space)<<'\n';  //header
+	
+	
+	char buffer[255];
+	while (!stream.eof()) {
+		stream.getline(buffer, 255,'\n');
+		buffer_tok= std::string(buffer);
+		auto tokens = tokenize(buffer_tok,del);
+		table<<std::setfill(' ');
+		table<<"|";
+		for(auto & temp: tokens){
+			table<<std::setw(cell_s)<<temp<<"|";
+		}
+		table<<'\n';
+		table<<std::setfill('-')<<std::setw(cell_space)<<'\n'; // tail
+	}
+
+	
+	return table;
+};

@@ -55,6 +55,9 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 	case 100:
 		carga_divipola("Divipola.csv", dpto);
 		carga_SC("SistemaCiudades.csv", dpto);
+		aglomeracion(sc, dpto);
+		uninodal(sc, dpto);
+		capital_menor(sc);
 		break;
      case 0:
           if (tokens.size() != 2)
@@ -115,10 +118,11 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 		uninodal(sc, dpto);
 		break;
 	case 12:
+		capital_menor(sc);
 		break;
 	case 13:
+		reporte(sc, dpto);
 		break;
-
 	case 14:
 		break;
 
