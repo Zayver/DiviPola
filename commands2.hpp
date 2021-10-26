@@ -12,8 +12,6 @@
 #include <map>
 #include <sstream>
 #include <string>
-#include <tuple>
-#include <utility>
 static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
 
      if (dptos.empty())

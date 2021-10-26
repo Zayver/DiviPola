@@ -7,7 +7,6 @@
 #pragma once
 #include <map>
 #include <string>
-#include <set>
 #ifdef _WIN32
 	#include <windows.h>
 	#define clearscreen() system("cls")
