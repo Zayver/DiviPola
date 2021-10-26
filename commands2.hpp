@@ -149,10 +149,16 @@ static void reporte(const SC &sc, const std::map<uint, Department> &dptos) {
 		}
 	}
 
-	
-
-	tot_col= mun_aglo+sc.uninodal.size()+may_100+men_100;
-	pob_tot_col= pob_aglo+pob_uni+pob_may_100+pob_men_100;
+	//poblacion ANM
+	uint anm_cant=0, pob_anm=0;
+	for(auto & actual_dpto: dptos){
+		anm_cant+=actual_dpto.second.anm.size();
+		for(auto & actual_anm : actual_dpto.second.anm){
+			pob_anm+=actual_anm.second.population;
+		}
+	}
+	tot_col= mun_aglo+sc.uninodal.size()+may_100+men_100  +anm_cant;
+	pob_tot_col= pob_aglo+pob_uni+pob_may_100+pob_men_100 +pob_anm;
 
 
      out << "Sistema de ciudades,Municipios,Población total \n"
