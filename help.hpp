@@ -54,16 +54,12 @@ static void help(const std::string &command) {
           cout << "Limpia pantalla\n";
           cout << "Sintaxis [clear]\n";
 
-     } else if (command == "componente1") {
+     } else if (command == "aglomeracion") {
           cout << "Crear componente C1 aglomeraciones urbanas\n";
-     } else if (command == "componente2") {
+     } else if (command == "uninodal") {
           cout << "Crear componente C2 ciudades uninodales\n";
-     } else if (command == "componente3") {
-          cout << "Crear componente C3 ciudades con menos de 100.000 "
-                  "habitantes\n";
-     } else if (command == "componente4") {
-          cout << "Crear componente C4 ciudades excentas de las "
-                  "clasificaciones\n";
+     } else if (command == "capital_menor") {
+          cout << "Crear componente C3 capitales menores\n";
      } else if (command == "reporte") {
           cout << "Generar reporte y mostrarlo en pantalla\n";
      } else if (command == "codificar") {
