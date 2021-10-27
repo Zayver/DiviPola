@@ -292,14 +292,16 @@ HuffmanBIN* tree(std::string t)
     huffs->CHuff=CHuff;
     return huffs;
 }
-static void codificar(const std::string &filename,const std::string &c)
+static void codificar(const std::string &c,const std::string &filename)
 {   
     std::ifstream file(c);
-    std::fstream load(filename,/*std::ios::in|*/std::ios::out|std::ios::binary);
-     if (!file.good()||!load.good())
+    if (!file.good())
           throw Command_exp("[Codificar]: No se pudo cargar el archivo correctamente, errores en la carga");
      if (file.peek() == std::ifstream::traits_type::eof())
           throw Command_exp("[Codificar]: Archivo vacío, imposible cargar elementos en memoria");
+    std::fstream load(filename,/*std::ios::in|*/std::ios::out|std::ios::binary);
+     if(!load.good())
+		throw Command_exp("[codificar]: Imposible crear archivo");
     std::string buffer;
     std::string gigante="";
     while (!file.eof()) {
@@ -312,9 +314,9 @@ static void codificar(const std::string &filename,const std::string &c)
     file.close();
     load.close();
 }  
-static void decodificar(const std::string &filename)
+static void decodificar(const std::string &filename, const std::string & output)
 {   
-    std::ofstream file("decodificadoHuffman.txt");
+    std::ofstream file(output);
     std::ifstream load(filename,std::ios::binary);
      if (!file.good()||!load.good())
           throw Command_exp("[Decdificar]: No se pudo cargar el archivo correctamente, errores en la carga");

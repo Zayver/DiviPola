@@ -126,20 +126,16 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 	case 14:
           if (tokens.size() != 3)
                throw Interpreter_exception(
-                   "Invalid arguments for [listar municipios]");
+                   "Invalid arguments for [codificar]");
           codificar((tokens[1]),(tokens[2]));
 		break;
 
 	case 15:
-     if (tokens.size() != 2)
+     if (tokens.size() != 3)
                throw Interpreter_exception(
-                   "Invalid arguments for [listar municipios]");
-          decodificar((tokens[1]));
+                   "Invalid arguments for [decodificar]");
+          decodificar((tokens[1]),tokens[2]);
 		break;
-
-	case 16:
-		break;
-
 	
      default:
           help();

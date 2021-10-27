@@ -54,23 +54,22 @@ static void help(const std::string &command) {
           cout << "Limpia pantalla\n";
           cout << "Sintaxis [clear]\n";
 
-     } else if (command == "componente1") {
+     } else if (command == "aglomeracion") {
           cout << "Crear componente C1 aglomeraciones urbanas\n";
-     } else if (command == "componente2") {
+     } else if (command == "uninodal") {
           cout << "Crear componente C2 ciudades uninodales\n";
-     } else if (command == "componente3") {
+     } else if (command == "capital_menor") {
           cout << "Crear componente C3 ciudades con menos de 100.000 "
                   "habitantes\n";
-     } else if (command == "componente4") {
-          cout << "Crear componente C4 ciudades excentas de las "
-                  "clasificaciones\n";
      } else if (command == "reporte") {
           cout << "Generar reporte y mostrarlo en pantalla\n";
      } else if (command == "codificar") {
           cout << "Generar la codificación de huffman con los datos del SC\n";
-     } else if (command == "descodificar") {
+		cout<<"Sintaxis: [codificar] [archivo entrada] [nombre salida] \n";
+     } else if (command == "decodificar") {
           cout << "Cargar en memoria los datos de la codificación de huffman y "
                   "mostrarlos\n";
+		cout<<"Sintaxis: [decodificar] [archivo entrada] [nombre salida] \n";
      } else {
           cout << "Comando desconocido, use [help] para ver comandos\n";
      }
