@@ -8,7 +8,10 @@
  * Archivo con la función main que invoca al interprete principal
  */
 #include "interpreter.hpp" 
-int main(){
+#ifdef _WIN32
+typedef unsigned int uint;
+#endif
+int main(){ 
 	//*Para salida de windows
 	#ifdef _WIN32
 		SetConsoleOutputCP( 65001 ); //65001 significa utf-8 en regedit de windows 

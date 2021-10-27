@@ -13,7 +13,14 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <iostream>
 #include <utility>
+#include <queue>
+#include <fstream>
+#include <vector>
+#include <tr1/unordered_map>
+
+typedef unsigned int uint;
 static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
 
      if (dptos.empty())
@@ -165,9 +172,162 @@ static void reporte(const SC &sc, const std::map<uint, Department> &dptos) {
          << "Total Sistema de ciudades,"<<mun_aglo+sc.uninodal.size()<<","<<pob_aglo+pob_uni<<"\n"
          << "\% con respecto a Colombia,"<<((mun_aglo+sc.uninodal.size())*100)/tot_col<<","<<((pob_aglo+pob_uni)*100)/pob_tot_col<<"\n"
          << "Total Colombia,"<<tot_col<<","<<pob_tot_col;
-
+     std::string huff = out.str();
+     std::cout<<huff;
      out = createTable(out, 3);
      printer::print(out, 30, "", "");//30 num aleatorio pero mayor a los \n del stream
 	//para imprimir toda la tabla considero que igual por grande que sea no se debe
 	//paginar
 }
+
+//huffman
+
+//Asignar nodo en el arbol
+Node* getNode(char simbolo, int freq,Node*izq,Node*der)
+{
+    Node* node = new Node();
+    node->s=simbolo;
+    node->f=freq;
+    node->i=izq;
+    node->d=der;
+    return node;
+}
+
+//revisa el arbol de Huffman y guarda los codigos en un mapa
+void codificar(Node* root, std::string str,std::tr1::unordered_map<char,std::string>&CHuff)
+{
+    if(root==nullptr)
+    {
+        return;
+    }
+    if( (root->i==nullptr ) && (root->d==nullptr) )
+    {
+        CHuff[root->s]=str;
+    }
+    codificar(root->i,str+"0",CHuff);
+    codificar(root->d,str+"1",CHuff);
+}
+//revisa y decodifica
+void decodificar(std::tr1::unordered_map<char,std::string>CHuff, std::string text)
+{
+    std::string space_delimiter = " ";
+    std::vector<std::string> words{};
+    size_t pos = 0;
+    while ((pos = text.find(space_delimiter)) != std::string::npos) {
+        words.push_back(text.substr(0, pos));
+        text.erase(0, pos + space_delimiter.length());
+    }
+    for (const auto &str : words) {
+        for(auto bub:CHuff)
+        {
+            if(bub.second==str)
+                //cout <<bub.first;
+                bub.first;
+        }
+    }
+}
+std::string decodificar(std::tr1::unordered_map<char,std::string>CHuff, std::string text,std::string arc)
+{
+    std::string space_delimiter = " ";
+    std::vector<std::string> words{};
+    size_t pos = 0;
+    std::string buffer="";
+    while ((pos = text.find(space_delimiter)) != std::string::npos) {
+        words.push_back(text.substr(0, pos));
+        text.erase(0, pos + space_delimiter.length());
+    }
+    for (const auto &str : words) {
+        for(auto bub:CHuff)
+        {
+            if(bub.second==str)
+                buffer+=bub.first;
+        }
+    }
+    return buffer;
+}
+//arbolito de mango
+HuffmanBIN* tree(std::string t)
+{
+    //contador de simbolos en mapa
+    std::tr1::unordered_map<char,int>fr;
+    for(char s:t)
+    {
+        fr[s]++;
+    }
+    //cola de prioridad
+    std::priority_queue <Node*,std::vector<Node*>,comp>pq;
+    //agg nodos de simbolo
+    for(auto pair:fr){
+        pq.push(getNode(pair.first,pair.second,nullptr,nullptr));
+    }
+    //Rep hasta que haya mas de 1 nodo en la cola
+    while (pq.size()!=1)
+    {
+        Node*izq=pq.top();pq.pop();
+        Node*der=pq.top();pq.pop();
+        int sum=izq->f+der->f;
+        pq.push(getNode(pq.top()->s,sum,izq,der));
+    }
+    Node* root = pq.top();
+    //impprime los codigos por simbolo
+    std::tr1::unordered_map<char,std::string>CHuff;
+    codificar(root,"",CHuff);
+    cout<<"\nLos codigos de Huffman son:\n"<<"\n";
+    for(auto p:CHuff)
+    {
+        cout<<p.first<<" "<<p.second<<"\n";
+    }
+    //imprime el mensaje original
+    //cout<<"\nPreCodificar:\n"<<t<<'\n';
+    std::string str="";
+    for(char simbolo: t){
+        str+=CHuff[simbolo]+" ";
+    }
+    /*cout<<"\nEl texto codificado es:\n"<<str<<'\n';
+    cout<<"\nEl texto decodificado es: \n";
+    int index=-1;
+        decodificar(CHuff,str);
+    cout <<"\n---------------\n";
+    */HuffmanBIN* huffs = new HuffmanBIN();
+    huffs->bin=str;
+    huffs->CHuff=CHuff;
+    return huffs;
+}
+static void codificar(std::string filename,std::string c)
+{   
+    std::ifstream file(c);
+    std::fstream load(filename,/*std::ios::in|*/std::ios::out|std::ios::binary);
+     if (!file.good()||!load.good())
+          throw Command_exp("[Codificar]: No se pudo cargar el archivo correctamente, errores en la carga");
+     if (file.peek() == std::ifstream::traits_type::eof())
+          throw Command_exp("[Codificar]: Archivo vacío, imposible cargar elementos en memoria");
+    std::string buffer;
+    std::string gigante="";
+    while (!file.eof()) {
+        std::getline(file, buffer,'\n');
+        gigante+=buffer;
+        gigante+="\n";
+        }
+    HuffmanBIN* huffs = tree(gigante);
+    load.write((char*)&huffs,sizeof(HuffmanBIN)); 
+    file.close();
+    load.close();
+}  
+static void decodificar(std::string filename)
+{   
+    std::ofstream file("decodificadoHuffman.txt");
+    std::ifstream load(filename,std::ios::binary);
+     if (!file.good()||!load.good())
+          throw Command_exp("[Decdificar]: No se pudo cargar el archivo correctamente, errores en la carga");
+     if (load.peek() == std::ifstream::traits_type::eof())
+          throw Command_exp("[Decodificar]: Archivo vacío, imposible cargar elementos en memoria");
+    std::string buffer;
+    std::string gigante="";
+    HuffmanBIN* hufs = new HuffmanBIN();
+    load.read((char*)&hufs,sizeof(hufs));
+    std::string save = decodificar(hufs->CHuff,hufs->bin,"arc");
+    cout<<save;
+    file<<save;
+    file.close();
+    load.close();
+} 

@@ -10,7 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
-
+typedef unsigned int uint;
 
 static std::string trim(const std::string &input) {
 

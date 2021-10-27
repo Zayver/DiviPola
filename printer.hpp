@@ -15,6 +15,7 @@
 #include <sstream>
 #include <string>
 using std::cout;
+typedef unsigned int uint;
 namespace printer {
 template <typename first, typename second>
 static void printMap(const std::map<first, second> &data,

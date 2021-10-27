@@ -13,7 +13,8 @@
 #include <sstream>
 #include <vector>
 
-using std::cout;
+typedef unsigned int uint;
+using std::cout;using std::cin;
 using mapper = std::map<unsigned int, Department>;
 
 
@@ -27,7 +28,7 @@ static void carga_divipola(const std::string &filename, mapper &dpto) {
                             "correctamente, errores en la carga");
      // mirar si el archivo esta vacio
      if (file.peek() == std::ifstream::traits_type::eof())
-          throw Command_exp("[carga_divipola]: Archivo vacío, imposible cargar "
+          throw Command_exp("[carga_divipola]: Archivo vacio, imposible cargar "
                             "elementos en memoria");
 
      std::string buffer;
@@ -105,7 +106,7 @@ static void carga_divipola(const std::string &filename, mapper &dpto) {
                                                   stod(tokens[8])));
                          }
 
-
+                              
                          totalp++;
 
                          line_pos = file.tellg();
@@ -127,9 +128,10 @@ static void carga_divipola(const std::string &filename, mapper &dpto) {
      cout << "Correcto,se cargaron: \n";
      cout << "\t" << dpto.size() - 1 << "   Departamentos\n";
      cout << "\t" << totalm << "   Municipios\n";
-     cout << "\t" << totalanm << "   áreas no municipalizadas\n";
+     cout << "\t" << totalanm << "   Areas no municipalizadas\n";
      cout << "\t" << totalp << "   Centros poblados\n";
 }
+
 static void listar_departamentos(const mapper &dpto) {
      if (dpto.empty())
           throw Command_exp("[listar_departamentos]: No hay dptos en memoria");
