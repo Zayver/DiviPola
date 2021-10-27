@@ -13,7 +13,6 @@
 #include <sstream>
 #include <vector>
 
-typedef unsigned int uint;
 using std::cout;using std::cin;
 using mapper = std::map<unsigned int, Department>;
 

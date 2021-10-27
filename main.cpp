@@ -9,7 +9,6 @@
  */
 #include "interpreter.hpp" 
 #ifdef _WIN32
-typedef unsigned int uint;
 #endif
 int main(){ 
 	//*Para salida de windows

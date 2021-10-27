@@ -6,8 +6,11 @@
  */
 #pragma once
 #include <map>
-#include <string>
 #include <set>
+#include <string>
+#include <vector>
+#include <tr1/unordered_map>
+
 #ifdef _WIN32
 	#include <windows.h>
 	#define clearscreen() system("cls")
@@ -79,4 +82,24 @@ struct SC{
 	std::map<std::string, urbanAgglomeration> agglomerations;
 	std::map<std::string, CM> uninodal;
 	SC(): agglomerations(){}
+};
+
+//nodo
+struct Node{
+    
+    char s;
+    int f;
+    Node *i,*d;
+};
+//HuffmanT
+struct HuffmanBIN{
+    std::tr1::unordered_map<char,std::string>CHuff;
+    std::string bin;
+};
+//objeto de comparacion que sera usado para ordenar la pila
+struct comp{
+    bool operator()(Node*i,Node*d)
+    {
+        return i->f > d->f;
+    }
 };

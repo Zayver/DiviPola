@@ -20,7 +20,6 @@
 #include <vector>
 #include <tr1/unordered_map>
 
-typedef unsigned int uint;
 static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
 
      if (dptos.empty())
@@ -293,7 +292,7 @@ HuffmanBIN* tree(std::string t)
     huffs->CHuff=CHuff;
     return huffs;
 }
-static void codificar(std::string filename,std::string c)
+static void codificar(const std::string &filename,const std::string &c)
 {   
     std::ifstream file(c);
     std::fstream load(filename,/*std::ios::in|*/std::ios::out|std::ios::binary);
@@ -313,7 +312,7 @@ static void codificar(std::string filename,std::string c)
     file.close();
     load.close();
 }  
-static void decodificar(std::string filename)
+static void decodificar(const std::string &filename)
 {   
     std::ofstream file("decodificadoHuffman.txt");
     std::ifstream load(filename,std::ios::binary);
