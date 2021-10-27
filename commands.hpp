@@ -241,6 +241,10 @@ static void carga_SC(const std::string &file_name, mapper &dpto) {
           }
           auto actual_cm = actual_dpto->second.cm.find(stoi(tokens[4]));
           if (actual_cm == actual_dpto->second.cm.end()) {
+			auto actual_anm = actual_dpto->second.anm.find(stoi(tokens[4]));
+			if(actual_anm != actual_dpto->second.anm.end()){
+				actual_anm->second.population= std::stoi(tokens[6]);
+			}
                //el municipio no existe en la divipola o es un ANM que por defecto no pertenece al SC
                continue;
           }

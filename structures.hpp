@@ -39,6 +39,7 @@ struct CP {
 struct ANM {
      std::string name;
      std::map<unsigned int, CP> anm_cp;
+	unsigned int population;
      ANM(const std::string &n) : name(n) {}
 };
 struct CM {
