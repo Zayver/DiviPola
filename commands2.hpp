@@ -177,8 +177,6 @@ static void reporte(const SC &sc, const std::map<uint, Department> &dptos) {
          << "Total Sistema de ciudades,"<<mun_aglo+sc.uninodal.size()<<","<<pob_aglo+pob_uni<<"\n"
          << "\% con respecto a Colombia,"<<((mun_aglo+sc.uninodal.size())*100)/tot_col<<","<<((pob_aglo+pob_uni)*100)/pob_tot_col<<"\n"
          << "Total Colombia,"<<tot_col<<","<<pob_tot_col;
-     std::string huff = out.str();
-     std::cout<<huff;
      out = createTable(out, 3);
      printer::print(out, 30, "", "");//30 num aleatorio pero mayor a los \n del stream
 	//para imprimir toda la tabla considero que igual por grande que sea no se debe

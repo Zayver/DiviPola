@@ -7,6 +7,14 @@
  * @brief 
  * Archivo con la función main que invoca al interprete principal
  */
+//se usan smart pointers para la tercera entrega soportados solo desde c++11
+//entonces:
+#if __cplusplus < 201103L
+	#error Min std supported: C++11
+	#include <null>
+	//para que no siga compilando luego del #error
+#endif
+
 #include "interpreter.hpp" 
 #ifdef _WIN32
 #endif
