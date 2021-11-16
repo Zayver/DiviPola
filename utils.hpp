@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 typedef unsigned int uint;
 
 static std::string trim(const std::string &input) {
@@ -47,7 +48,7 @@ static std::vector<std::string> tokenize(std::string s, const std::string del = 
      return tokens;
 }
 
-std::stringstream createTable(std::stringstream & stream, uint columns, std::string del = ","){
+static std::stringstream createTable(std::stringstream & stream, uint columns, std::string del = ","){
 	//!EL STREAM NO DEBE TERMINAR CON UN SALTO DE LINEA PORQUE SI NO 
 	//!SE IMPRIME UNA FILA DE MAS
 	std::stringstream table;
@@ -74,3 +75,14 @@ std::stringstream createTable(std::stringstream & stream, uint columns, std::str
 	
 	return table;
 };
+
+constexpr long double TORAD = M_PI/ 180;
+constexpr long double EARCHRADIUS = 6378.14;
+long double coordinatesToKm(long double lat1, long double lon1, long double lat2, long double lon2){
+	double dlong = (lon2 - lon1) * TORAD ;
+    	double dlat = (lat2 - lat1) * TORAD;
+    	double a = pow(sin(dlat/2.0), 2) + cos(lat1*TORAD) * cos(lat2*TORAD) * pow(sin(dlong/2.0), 2);
+    	double c = 2 * atan2(sqrt(a), sqrt(1-a));
+    	double d = EARCHRADIUS * c;
+    	return d;
+}

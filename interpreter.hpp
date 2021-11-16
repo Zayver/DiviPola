@@ -7,8 +7,11 @@
 #pragma once
 #include "commands.hpp"
 #include "commands2.hpp"
+#include "commands3.hpp"
 #include "help.hpp"
+#include "structures.hpp"
 #include "utils.hpp"
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -24,28 +27,32 @@ class Exit_signal {};
 static const std::map<std::string, unsigned int> commands{
 	{"test",99},
 	{"quick",100},
-    {"carga_divipola", 0},
-    {"listar_departamentos", 1},
-    {"listar_municipios", 2},
-    {"listar_poblaciones", 3},
-    {"info_sumaria", 4},
-    {"carga_SC", 5},
-    {"esta_en_sistema", 6},
-    {"salir", 7},
-    {"clear", 8},
-    {"help", 9},
-    {"aglomeracion", 10},
-    {"uninodal", 11},
-    {"capital_menor", 12},
-    {"reporte", 13},
-    {"codificar", 14},
-    {"decodificar", 15}};
+    	{"carga_divipola", 0},
+    	{"listar_departamentos", 1},
+    	{"listar_municipios", 2},
+    	{"listar_poblaciones", 3},
+    	{"info_sumaria", 4},
+    	{"carga_SC", 5},
+    	{"esta_en_sistema", 6},
+    	{"salir", 7},
+    	{"clear", 8},
+    	{"help", 9},
+    	{"aglomeracion", 10},
+    	{"uninodal", 11},
+    	{"capital_menor", 12},
+    	{"reporte", 13},
+    	{"codificar", 14},
+    	{"decodificar", 15},
+	{"distancia",16},
+	{"ruta_mas_corta",17},
+	{"ciudad_remota",18}};
 
 
 
 
 // este comando tendría que recibir TODO lo que todas las funciones harían D:
-static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto, SC & sc) {
+static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto, SC & sc,
+			std::map<std::string, Graph> & gsc) {
      if (tokens[0].empty())
           return;
      switch (commands.at(tokens[0])) {
@@ -131,12 +138,29 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 		break;
 
 	case 15:
-     if (tokens.size() != 3)
+     	if (tokens.size() != 3)
                throw Interpreter_exception(
                    "Invalid arguments for [decodificar]");
           decodificar((tokens[1]),tokens[2]);
 		break;
-	
+	//comandos entrega 3 incluidos en commands3.hpp
+	case 16:
+		if(tokens.size()==1)
+			distancia(sc, gsc);
+		else
+			distancia(sc, gsc, tokens[1]);
+		break;
+	case 17:
+		if(tokens.size()!=2)
+			throw Interpreter_exception("Invalid arguments for [ruta_mas_corta]");
+		ruta_mas_corta(gsc, tokens[1]);
+		break;
+	case 18:
+		if(tokens.size()!=2)
+			throw Interpreter_exception("Invalid arguments for [ciudad_remota]");
+		ciudad_remota(gsc, tokens[1]);
+		break;
+		
      default:
           help();
           break;
@@ -148,6 +172,7 @@ inline void interpreter() {
      std::vector<std::string> tokens;
      mapper dpto; //departamentos 
 	SC sc; //sistema de ciudades
+	std::map<std::string, Graph> gsc; // mapa de grafos de las aglomeraciones con key en su nombre
      cout << "Interprete de comandos DIVIPOLA\n";
      do {
           cout << "divipola $ ";
@@ -161,7 +186,7 @@ inline void interpreter() {
 		}
 			
           try {
-               executeCommand(tokens, dpto, sc);
+               executeCommand(tokens, dpto, sc, gsc);
           } catch (Interpreter_exception e) {
                cout << "ERROR: " << e.what() << '\n';
           } catch (std::out_of_range e) {

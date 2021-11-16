@@ -14,6 +14,7 @@
 #include <string>
 #include <tuple>
 #include <iostream>
+#include <typeinfo>
 #include <utility>
 #include <queue>
 #include <fstream>
@@ -28,6 +29,7 @@ static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
 
      uint agglo = 0, cant_cm = 0;
      for (auto &actual_dpto : dptos) {
+		CM center;
           for (auto &actual_cm : actual_dpto.second.cm) {
 			if(actual_cm.second.SC_name == "" || actual_cm.second.SC_name.find("A-") != 0)
                     continue; //es una uninodal o no pertence el sc
@@ -47,6 +49,8 @@ static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
                         std::make_tuple(actual_cm.second.name),
                         std::make_tuple(actual_cm.second));
                     cant_cm++;
+				if(actual_cm.second.sc==2)
+					temp.first->second.center= actual_cm.second;
                } else {
                     // si existe añadir
                     status->second.ordinary.emplace(
@@ -54,8 +58,12 @@ static void aglomeracion(SC &sc, const std::map<uint, Department> &dptos) {
                         std::make_tuple(actual_cm.second.name),
                         std::make_tuple(actual_cm.second));
                     cant_cm++;
+				if(actual_cm.second.sc==2)
+					status->second.center= actual_cm.second;
                }
           }
+		
+
      }
      std::stringstream out;
      out << "Se crearon " << agglo << " aglomeraciones urbanas, compuestas por "
