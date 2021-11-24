@@ -148,7 +148,7 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 		if(tokens.size()!=2)
 			throw Interpreter_exception("Invalid arguments for [distancia]");
 		distancia(sc, gsc, tokens[1]);
-	
+		break;
 	case 17:
 		if(tokens.size()!=2)
 			throw Interpreter_exception("Invalid arguments for [ruta_mas_corta]");
@@ -157,7 +157,7 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 	case 18:
 		if(tokens.size()!=2)
 			throw Interpreter_exception("Invalid arguments for [ciudad_remota]");
-		ciudad_remota(gsc, tokens[1]);
+		ciudad_remota(gsc,sc, tokens[1]);
 		break;
 		
      default:

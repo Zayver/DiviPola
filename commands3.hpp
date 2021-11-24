@@ -101,8 +101,31 @@ static void ruta_mas_corta(std::map<std::string, Graph> &gsc, SC &sc,
      auto center_search = sc.agglomerations.find(aglo);
      CM center = center_search->second.center;
      Vertex v{center};
-     std::stringstream out;
-     printer::print(out);
+	auto graf = gsc.find(aglo);
+	graf->second.dijskstra(center);
+	
+	printer::print("\nCaminos más cortos a las ciudades aglo de "+aglo);
+	for(auto & temp: graf->second.vertexes){
+		if(temp.first==center.name)
+			continue;
+		graf->second.shortestPath(temp.second);
+	}
+	printer::print("Caminos más cortos a las ciudades aglo de "+aglo);
 }
-static void ciudad_remota(std::map<std::string, Graph> &gsc,
-                          const std::string &aglo) {}
+static void ciudad_remota(std::map<std::string, Graph> &gsc,SC &sc,
+                          const std::string &aglo) {
+	if (gsc.empty())
+          throw Command_exp("[ruta_mas_corta]: Grafo vacío");
+     auto search = gsc.find(aglo);
+     if (search == gsc.end())
+          throw Command_exp("[ruta_mas_corta]: Aglomeración inexistente");
+
+	auto center_search = sc.agglomerations.find(aglo);
+     CM center = center_search->second.center;
+	Vertex * c = search->second.find(center);
+
+	c = search->second.longestVertex(c);
+
+	search->second.shortestPath(*c);	 
+
+}
