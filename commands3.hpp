@@ -7,96 +7,102 @@
 #include "printer.hpp"
 #include "structures.hpp"
 #include "utils.hpp"
+#include <cstdio>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
 
+static void test(std::map<std::string, Graph> &gsc, const std::string &aglo) {
+     auto s = gsc.find(aglo);
+     s->second.show();
+}
 static void distancia(const SC &sc, std::map<std::string, Graph> &gsc,
-                      const std::string &aglo = "") {
+                      const std::string &aglo) {
      if (sc.agglomerations.empty())
           throw Command_exp("[distancia]: Sistema de ciudades vacio");
-     // dejar el parametro por defecto hace que se creen los grafos
-     // para todas las aglomeraciones
-     if (aglo == "") {
-          for (auto &a_aglo : sc.agglomerations) {
-               Graph ng;
-               // loopear por cada cm del aglo para vertex
-               for (auto &a_cm : a_aglo.second.ordinary) {
-                    ng.insertVertex(a_cm.second);
-               }
-               for (auto &a_cm : a_aglo.second.minor_capital) {
-                    ng.insertVertex(a_cm.second);
-               }
+     auto search = sc.agglomerations.find(aglo);
+     if (search == sc.agglomerations.end())
+          throw Command_exp("[distancia]: Aglomeración inexistente");
 
-               // añadir las aristas con sus distancias
-               for (auto &temp : ng.vertex) {
-                    if (temp.first == a_aglo.second.center.name)
-                         continue; // no puede añadirse una arista consigo mismo
+     Graph ginsert;
 
-                    ng.insertEdge(
-                        a_aglo.second.center, temp.second.cm,
-                        coordinatesToKm(a_aglo.second.center.latitude,
-                                        a_aglo.second.center.longitude,
-                                        temp.second.cm.latitude,
-                                        temp.second.cm.longitude));
-               }
-
-               gsc.emplace(
-                   std::piecewise_construct, std::make_tuple(a_aglo.first),
-                   std::make_tuple(ng)); // construir el grafo para cada aglo
-          }
-     } else {
-          auto search = sc.agglomerations.find(aglo);
-          if (search == sc.agglomerations.end())
-               throw Command_exp("[distancia]: No existe la aglomeración");
-          Graph ng;
-          // loopear por cada cm del aglo para vertex
-          for (auto &a_cm : search->second.ordinary) {
-               ng.insertVertex(a_cm.second);
-          }
-          for (auto &a_cm : search->second.minor_capital) {
-               ng.insertVertex(a_cm.second);
-          }
-          // añadir las aristas con sus distancias
-          for (auto &temp : ng.vertex) {
-               if (temp.first == search->second.center.name)
-                    continue; // no puede añadirse una arista consigo mismo
-
-               cout << search->second.center.name << "--" << temp.second.cm.name
-                    << '\n';
-               ng.insertEdge(search->second.center, temp.second.cm,
-                             coordinatesToKm(search->second.center.latitude,
-                                             search->second.center.longitude,
-                                             temp.second.cm.latitude,
-                                             temp.second.cm.longitude));
-          }
-          gsc.emplace(std::piecewise_construct, std::make_tuple(search->first),
-                      std::make_tuple(ng));
+	/*
+		*TODOS LOS CICLOS SE PODRÍAN REDUCIR
+		*PERO EL CODIGO QUEDARÍA MUY ILEGIBLE Y CONFUSO
+	*/
+     // insertar vertices
+     CM center = search->second.center;
+     ginsert.insertVertex(center); // centro de la aglo
+     for (auto &temp : search->second.ordinary) {
+          if (center.name == temp.second.name)
+               continue;
+          ginsert.insertVertex(temp.second);
+          auto len =
+              coordinatesToKm(center.latitude, center.longitude,
+                              temp.second.latitude, temp.second.longitude);
+          ginsert.insertEdge(center, temp.second, len);
      }
-     printer::print("Correcto se calcularon y se guardaron las distancias\n");
+     for (auto &temp : search->second.minor_capital) {
+          ginsert.insertVertex(temp.second);
+          auto len =
+              coordinatesToKm(center.latitude, center.longitude,
+                              temp.second.latitude, temp.second.longitude);
+          ginsert.insertEdge(center, temp.second, len);
+     }
+     // insertar aristas restantes, todos contra todos
+	
+     for (auto &temp : search->second.ordinary) {
+          for (auto &temp1 : search->second.minor_capital) {
+               auto len = coordinatesToKm(
+                   temp.second.latitude, temp.second.longitude,
+                   temp1.second.latitude, temp1.second.longitude);
+               ginsert.insertEdge(temp.second, temp1.second, len);
+          }
+     }
+
+	//ordinarias 
+	for(auto & temp: search->second.ordinary){
+		for(auto &temp1: search->second.ordinary){
+			if(temp.first==temp1.first)
+				continue; //son iguales
+			auto len = coordinatesToKm(
+                   temp.second.latitude, temp.second.longitude,
+                   temp1.second.latitude, temp1.second.longitude);
+               ginsert.insertEdge(temp.second, temp1.second, len);
+		}
+	}
+	//capitales menores
+	for(auto & temp: search->second.minor_capital){
+		for(auto &temp1: search->second.minor_capital){
+			if(temp.first==temp1.first)
+				continue; //son iguales
+			auto len = coordinatesToKm(
+                   temp.second.latitude, temp.second.longitude,
+                   temp1.second.latitude, temp1.second.longitude);
+               ginsert.insertEdge(temp.second, temp1.second, len);
+		}
+	}
+
+     gsc.emplace(aglo, ginsert);
+     printer::print("Correcto se calcularon y se guardaron las distancias de "
+                    "la aglomereración: " +
+                    aglo + "\n");
 }
-static void ruta_mas_corta(std::map<std::string, Graph> &gsc,
+static void ruta_mas_corta(std::map<std::string, Graph> &gsc, SC &sc,
                            const std::string &aglo) {
+
      if (gsc.empty())
-          throw Command_exp("Grafos vacíos");
+          throw Command_exp("[ruta_mas_corta]: Grafo vacío");
      auto search = gsc.find(aglo);
      if (search == gsc.end())
-          throw Command_exp("Agromeracion inexistente");
+          throw Command_exp("[ruta_mas_corta]: Aglomeración inexistente");
 
-     auto center = search->second.vertex.begin()++->second;
-	std::stringstream out; 
-     for (auto &temp : search->second.vertex) {
-          if (center.cm == temp.second.cm)
-               continue;
-          auto path = search->second.shortestPath(&center, &temp.second);
-
-          printer::print("Path de "+center.cm.name+ " a "+ temp.second.cm.name+"\n");
-          for (auto &temp2: path) {
-               out << temp2->cm.name << "---" << temp2->distance << '\n';
-          }
-          out << "Distancia: " << path.back()->distance << '\n';
-		printer::print(out);
-     }
+     auto center_search = sc.agglomerations.find(aglo);
+     CM center = center_search->second.center;
+     Vertex v{center};
+     std::stringstream out;
+     printer::print(out);
 }
 static void ciudad_remota(std::map<std::string, Graph> &gsc,
                           const std::string &aglo) {}

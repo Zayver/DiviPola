@@ -5,6 +5,9 @@
  * Así como la sobrecarga de sus operadores y funciones
  */
 #pragma once
+#include <algorithm>
+#include <functional>
+#include <ios>
 #include <map>
 #include <queue>
 #include <set>
@@ -13,7 +16,8 @@
 #include <tr1/unordered_map>
 #include <limits>
 #include <list>
-
+#include <iostream> //TODO: Delete
+using std::cout;
 #ifdef _WIN32
 	#include <windows.h>
 	#define clearscreen() system("cls")
@@ -108,130 +112,55 @@ struct comp{
     }
 };
 
-//estructuras entrega 3 
-bool operator==(const CM &first, const CM &second) {
-     return first.name == second.name;
-}
 
-struct Edge {
-     CM cm;
-     long double lengh;
+//estructuras entrega 3 
+struct Edge{
+	CM connect;
+	long double lengh;
      Edge(const CM &data) {
-          cm = data;
+          connect = data;
           lengh = std::numeric_limits<double>::infinity();
      }
-     Edge(const CM &data, const long double size) {
-          cm = data;
+     Edge(const CM &data, const long double &size) {
+          connect = data;
           lengh = size;
      }
 };
-bool operator==(const Edge &first, const Edge &second) {
-     return first.cm.name == second.cm.name;
-}
-bool operator<(const Edge &first, const Edge &second) {
-     return first.lengh < second.lengh;
-}
-
-struct Vertex {
-     CM cm;
-     std::list<Edge> members;
-	double distance = std::numeric_limits<double>::infinity();
-     bool visited = false;
-	Vertex *predecessor = nullptr;
-     Vertex(const CM &data) : members() { cm = data; }
-	Vertex(){}
-};
-
-class Compare {
-   public:
-     bool operator()(Vertex *v1, Vertex *v2) {
-          return v1->distance < v2->distance;
-     }
-};
-
-struct Graph {
-     std::map<std::string, Vertex> vertex;
-
-	Graph(): vertex{}{}
-     Graph(const std::initializer_list<CM> &params): vertex{}{
-          for (auto &temp : params) {
-               insertVertex(temp);
-          }
-     }
-     void insertVertex(const CM &temp) {
-          vertex.emplace(std::piecewise_construct, std::make_tuple(temp.name),
-                         std::make_tuple(temp));
-     }
-     void deleteVertex(const CM &del) {
-          auto c = vertex.find(del.name);
-          c->second.members.remove_if(
-              [del](const Edge &cm) { return cm.cm.name == del.name; });
-          vertex.erase(del.name);
-     }
-     void insertEdge(const CM &first, const CM &second) {
-          vertex.at(first.name).members.emplace_back(second);
-          vertex.at(second.name).members.emplace_back(first);
-     }
-     void insertEdge(const CM &first, const CM &second,
-                     const long double size) {
-          vertex.at(first.name).members.emplace_back(second, size);
-          vertex.at(second.name).members.emplace_back(first, size);
-     }
-     void deleteEdge(const CM &first, const CM &second) {
-          vertex.at(first.name).members.remove(second);
-          vertex.at(second.name).members.remove(first);
-     }
-	Vertex* search(const CM & cm){
-		auto d = vertex.find(cm.name);
-		if(d!=vertex.end())
-			return &d->second;
-		else
-		 	return nullptr;
-	}
-     void dijkstraAlgorithm(Vertex* &start) {
-
-		//reinicializar cosas en los vertices
-		for(auto & temp: vertex){
-			temp.second.distance= std::numeric_limits<double>::infinity();
-			temp.second.predecessor=nullptr;
-			temp.second.visited=false;
-		}
-
-		std::priority_queue<Vertex *, std::vector<Vertex *>, Compare> left;
-		start->distance=0;
-		left.emplace(start);
-
-		while(!left.empty()){
-			
-			Vertex * current = left.top();
-			for(auto & temp: current->members){
-				auto f = vertex.find(temp.cm.name);
-				if(!f->second.visited){
-					if(current->distance+temp.lengh< f->second.distance){
-						f->second.distance= current->distance+temp.lengh;
-						f->second.predecessor=current;
-						left.push(&f->second);
-					}
-				}
-
-			}
-			left.pop();
-			
-			current->visited=true;
-			
-		}
-			
-
-	}
-	std::list<Vertex*> shortestPath(Vertex* start, Vertex * end){
-		dijkstraAlgorithm(start);
-		std::list<Vertex*>sp;
-		sp.push_front(end);
-		while(end->predecessor!=nullptr){
-			sp.push_front(end->predecessor);
-			end=end->predecessor;
-		}
-		return sp;
+struct Vertex{
+	CM data;
+	std::map<std::string,Edge> edges;
+	Vertex(const CM & data): edges(){
+		this->data= data;
 	}
 	
+};
+struct Graph{
+	uint size;
+	std::map<std::string, Vertex> vertexes;
+	Graph(){}
+	
+	void insertVertex(const CM & data){
+		Vertex d{data};
+		vertexes.emplace(data.name,d);
+	}
+	void insertEdge(const CM & one, const CM& two, long double len){
+		auto t1 = vertexes.find(one.name);
+		auto t2 = vertexes.find(two.name);
+		if(t1== vertexes.end() or t2== vertexes.end())
+			throw std::bad_function_call(); //una excepcion rara
+
+		Edge e{t2->second.data, len};
+		t1->second.edges.emplace(t2->first, e );
+		Edge e2{t1->second.data, len};
+		t2->second.edges.emplace(t1->first, e2 );
+
+	}
+	void show(){
+		for(auto & vertex: vertexes){
+			cout<<vertex.first<<'\n';
+			for(auto & edge: vertex.second.edges){
+				cout<<"\t"<<edge.second.lengh<<"--"<<edge.first<<'\n'; 
+			}
+		}
+	}
 };

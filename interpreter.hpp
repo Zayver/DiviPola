@@ -57,7 +57,7 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
           return;
      switch (commands.at(tokens[0])) {
 	case 99:
-		test(sc);
+		test(gsc, tokens[1]);
 		break;
 	case 100:
 		carga_divipola("Divipola.csv", dpto);
@@ -145,15 +145,14 @@ static void executeCommand(const std::vector<std::string> &tokens, mapper &dpto,
 		break;
 	//comandos entrega 3 incluidos en commands3.hpp
 	case 16:
-		if(tokens.size()==1)
-			distancia(sc, gsc);
-		else
-			distancia(sc, gsc, tokens[1]);
-		break;
+		if(tokens.size()!=2)
+			throw Interpreter_exception("Invalid arguments for [distancia]");
+		distancia(sc, gsc, tokens[1]);
+	
 	case 17:
 		if(tokens.size()!=2)
 			throw Interpreter_exception("Invalid arguments for [ruta_mas_corta]");
-		ruta_mas_corta(gsc, tokens[1]);
+		ruta_mas_corta(gsc, sc,tokens[1]);
 		break;
 	case 18:
 		if(tokens.size()!=2)
@@ -172,7 +171,7 @@ inline void interpreter() {
      std::vector<std::string> tokens;
      mapper dpto; //departamentos 
 	SC sc; //sistema de ciudades
-	std::map<std::string, Graph> gsc; // mapa de grafos de las aglomeraciones con key en su nombre
+	std::map<std::string, Graph> gsc;// mapa de grafos de las aglomeraciones con key en su nombre
      cout << "Interprete de comandos DIVIPOLA\n";
      do {
           cout << "divipola $ ";

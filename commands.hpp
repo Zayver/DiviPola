@@ -302,8 +302,3 @@ static void esta_en_sistema(const unsigned int &code, const mapper &dpto) {
      }
 }
 
-static void test(const SC & sc){
-	for(auto & temp: sc.agglomerations){
-		cout<<temp.second.center.name<<'\n';
-	}
-} 	
