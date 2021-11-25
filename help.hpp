@@ -65,11 +65,22 @@ static void help(const std::string &command) {
           cout << "Generar reporte y mostrarlo en pantalla\n";
      } else if (command == "codificar") {
           cout << "Generar la codificación de huffman con los datos del SC\n";
-		cout<<"Sintaxis: [codificar] [archivo entrada] [nombre salida] \n";
+          cout << "Sintaxis: [codificar] [archivo entrada] [nombre salida] \n";
      } else if (command == "decodificar") {
           cout << "Cargar en memoria los datos de la codificación de huffman y "
                   "mostrarlos\n";
-		cout<<"Sintaxis: [decodificar] [archivo entrada] [nombre salida] \n";
+          cout
+              << "Sintaxis: [decodificar] [archivo entrada] [nombre salida] \n";
+     } else if (command == "distancia") {
+          cout << "Calcular las distancias entre la aglo\n";
+          cout << "Sintaxis: [distancia] [aglomeración]\n";
+     } else if (command == "ruta_mas_corta") {
+          cout << "Calcular las rutas más cortas entre el centro y las "
+                  "ciudades\n";
+          cout << "Sintaxis: [ruta_mas_corta] [aglomeración] \n";
+     } else if (command == "ciudad_remota") {
+          cout << "Calcular la ciudad más remota en la aglomeracion\n";
+          cout << "Sintaxis: [ciudad_remota] [aglo]\n";
      } else {
           cout << "Comando desconocido, use [help] para ver comandos\n";
      }
@@ -94,7 +105,10 @@ static void help() {
             << "reporte\n"
             << "codificar\n"
             << "decodificar\n"
+            << "distancia\n"
+            << "ruta_mas_corta\n"
+            << "ciudad_remota\n"
             << "Sintaxis: [help] [comando] para info detallada\n";
 
-	printer::print(output);
+     printer::print(output);
 }
