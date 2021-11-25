@@ -302,8 +302,8 @@ HuffmanBIN* tree(std::string t)
 }
 void codificar(std::string filename,std::string c)
 {   
-    std::ifstream file("SistemaCiudades.csv");
-    std::fstream load("CodificadoHuffman.icmbin",/*std::ios::in|*/std::ios::out|std::ios::binary);
+    std::ifstream file(filename);
+    std::fstream load(c,/*std::ios::in|*/std::ios::out|std::ios::binary);
      if (!file.good()||!load.good())
           cout<<"[Codificar]: No se pudo cargar el archivo correctamente, errores en la carga";
      if (file.peek() == std::ifstream::traits_type::eof())
@@ -337,10 +337,10 @@ void codificar(std::string filename,std::string c)
     file.close();
     load.close();
 }  
-void decodificar(std::string filename)
+void decodificar(std::string filename,std::string filenameOut)
 {   
-    std::ofstream file("decodificadoHuffman.txt");
-    std::ifstream load("CodificadoHuffman32.icmbin",std::ios::binary);
+    std::ofstream file(filenameOut);
+    std::ifstream load(filename,std::ios::binary);
      if (!file.good()||!load.good())
           cout<<"[Decdificar]: No se pudo cargar el archivo correctamente, errores en la carga";
      if (load.peek() == std::ifstream::traits_type::eof())
