@@ -18,6 +18,8 @@
 #include <tr1/unordered_map>
 #include <utility>
 #include <vector>
+
+#include <bitset>
 using std::cout;
 #ifdef _WIN32
 #include <windows.h>
@@ -97,14 +99,47 @@ struct Node {
      int f;
      Node *i, *d;
 };
-// HuffmanT
-struct HuffmanBIN {
-     std::tr1::unordered_map<char, std::string> CHuff;
-     std::string bin;
+//HuffmanT
+struct HuffmanBINAuxiliar{    
+    std::tr1::unordered_map<char,int>CHuff;
+    int CHuffSize;
+    std::bitset<314072> bitsetBin;
+    int bitsetSize;
+    
+    void bin2auxiliar(std::string bin)
+    {
+        std::bitset<314072> aux (bin);
+        bitsetBin = aux;
+        bitsetSize= sizeof(bitsetBin);
+    }
+    
 };
-// objeto de comparacion que sera usado para ordenar la pila
-struct comp {
-     bool operator()(Node *i, Node *d) { return i->f > d->f; }
+struct HuffmanBIN{
+    std::tr1::unordered_map<char,std::string>CHuff;
+    std::string bin;
+std::string toBinary(int n)
+{
+    std::string r;
+    while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
+    return r;
+}
+    void auxiliar2bin(HuffmanBINAuxiliar aux)
+    {
+        bin = aux.bitsetBin.to_string();
+        for(auto a: aux.CHuff)
+        {
+            std::string tmp = toBinary(a.second);
+            tmp=tmp.substr(1);
+            CHuff[a.first]=tmp;
+        }
+    }
+};
+//objeto de comparacion que sera usado para ordenar la pila
+struct comp{
+    bool operator()(Node*i,Node*d)
+    {
+        return i->f > d->f;
+    }
 };
 
 // estructuras entrega 3

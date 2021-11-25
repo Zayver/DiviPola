@@ -194,6 +194,7 @@ static void reporte(const SC &sc, const std::map<uint, Department> &dptos) {
 //huffman
 
 //Asignar nodo en el arbol
+//Asignar nodo en el arbol
 Node* getNode(char simbolo, int freq,Node*izq,Node*der)
 {
     Node* node = new Node();
@@ -239,19 +240,19 @@ void decodificar(std::tr1::unordered_map<char,std::string>CHuff, std::string tex
 }
 std::string decodificar(std::tr1::unordered_map<char,std::string>CHuff, std::string text,std::string arc)
 {
-    std::string space_delimiter = " ";
-    std::vector<std::string> words{};
     size_t pos = 0;
     std::string buffer="";
-    while ((pos = text.find(space_delimiter)) != std::string::npos) {
-        words.push_back(text.substr(0, pos));
-        text.erase(0, pos + space_delimiter.length());
-    }
-    for (const auto &str : words) {
+    std::string overload="";
+    for(char s:text)
+    {
+        overload+=s;
         for(auto bub:CHuff)
         {
-            if(bub.second==str)
-                buffer+=bub.first;
+            if(bub.second==overload)
+                {
+                    buffer+=bub.first;
+                    overload="";
+                }
         }
     }
     return buffer;
@@ -288,32 +289,25 @@ HuffmanBIN* tree(std::string t)
     {
         cout<<p.first<<" "<<p.second<<"\n";
     }
-    //imprime el mensaje original
-    //cout<<"\nPreCodificar:\n"<<t<<'\n';
     std::string str="";
     for(char simbolo: t){
-        str+=CHuff[simbolo]+" ";
+        str+=CHuff[simbolo]+"";
     }
-    /*cout<<"\nEl texto codificado es:\n"<<str<<'\n';
-    cout<<"\nEl texto decodificado es: \n";
-    int index=-1;
-        decodificar(CHuff,str);
+    cout<<"\nEl texto se ha codificado con una longitud "<<str.length();
     cout <<"\n---------------\n";
-    */HuffmanBIN* huffs = new HuffmanBIN();
+    HuffmanBIN* huffs = new HuffmanBIN();
     huffs->bin=str;
     huffs->CHuff=CHuff;
     return huffs;
 }
-static void codificar(const std::string &c,const std::string &filename)
+void codificar(std::string filename,std::string c)
 {   
-    std::ifstream file(c);
-    if (!file.good())
-          throw Command_exp("[Codificar]: No se pudo cargar el archivo correctamente, errores en la carga");
+    std::ifstream file("SistemaCiudades.csv");
+    std::fstream load("CodificadoHuffman.icmbin",/*std::ios::in|*/std::ios::out|std::ios::binary);
+     if (!file.good()||!load.good())
+          cout<<"[Codificar]: No se pudo cargar el archivo correctamente, errores en la carga";
      if (file.peek() == std::ifstream::traits_type::eof())
-          throw Command_exp("[Codificar]: Archivo vacío, imposible cargar elementos en memoria");
-    std::fstream load(filename,/*std::ios::in|*/std::ios::out|std::ios::binary);
-     if(!load.good())
-		throw Command_exp("[codificar]: Imposible crear archivo");
+          cout<<"[Codificar]: Archivo vacío, imposible cargar elementos en memoria";
     std::string buffer;
     std::string gigante="";
     while (!file.eof()) {
@@ -322,25 +316,60 @@ static void codificar(const std::string &c,const std::string &filename)
         gigante+="\n";
         }
     HuffmanBIN* huffs = tree(gigante);
-    load.write((char*)&huffs,sizeof(HuffmanBIN)); 
+    HuffmanBINAuxiliar* huffsAux = new HuffmanBINAuxiliar;
+    huffsAux->bin2auxiliar(huffs->bin);
+    huffsAux->CHuffSize=huffs->CHuff.size();
+    load.write((char*)&huffsAux->CHuffSize, sizeof(int));
+
+    for(auto a : huffs->CHuff)
+    {
+        std::string tmp= "1"+a.second;
+        huffsAux->CHuff[a.first]=std::stoi(tmp,0,2);
+    }
+    
+    for(auto a : huffsAux->CHuff)
+    {
+    load.write((char*)&a.first,sizeof(char));
+    load.write((char*)&a.second,sizeof(int));
+    }
+    load.write((char*)&huffsAux->bitsetSize, sizeof(huffsAux->bitsetSize));
+    load.write((char*)&huffsAux->bitsetBin,huffsAux->bitsetSize);
     file.close();
     load.close();
 }  
-static void decodificar(const std::string &filename, const std::string & output)
+void decodificar(std::string filename)
 {   
-    std::ofstream file(output);
-    std::ifstream load(filename,std::ios::binary);
+    std::ofstream file("decodificadoHuffman.txt");
+    std::ifstream load("CodificadoHuffman32.icmbin",std::ios::binary);
      if (!file.good()||!load.good())
-          throw Command_exp("[Decdificar]: No se pudo cargar el archivo correctamente, errores en la carga");
+          cout<<"[Decdificar]: No se pudo cargar el archivo correctamente, errores en la carga";
      if (load.peek() == std::ifstream::traits_type::eof())
-          throw Command_exp("[Decodificar]: Archivo vacío, imposible cargar elementos en memoria");
+          cout<<"[Decodificar]: Archivo vacío, imposible cargar elementos en memoria";
     std::string buffer;
     std::string gigante="";
-    HuffmanBIN* hufs = new HuffmanBIN();
-    load.read((char*)&hufs,sizeof(hufs));
+    HuffmanBIN* hufs = new HuffmanBIN;
+    HuffmanBINAuxiliar* huffsAux = new HuffmanBINAuxiliar;
+
+    int chuffsize;
+
+    load.read((char*)&chuffsize, sizeof(int));
+    
+    huffsAux->CHuffSize=chuffsize;
+    for(int i=0; i<huffsAux->CHuffSize;i++)
+    {
+    char tmp=' ';
+    load.read(&tmp,sizeof(tmp));
+    int tmpint=0;
+
+    load.read((char*)&tmpint,sizeof(int));
+    huffsAux->CHuff[tmp]=tmpint;
+    }
+    load.read((char*)&huffsAux->bitsetSize, sizeof(huffsAux->bitsetSize));
+    load.read((char*)&huffsAux->bitsetBin,huffsAux->bitsetSize);
+    hufs->auxiliar2bin(*huffsAux);
     std::string save = decodificar(hufs->CHuff,hufs->bin,"arc");
-    cout<<save;
     file<<save;
+    cout<<save;
     file.close();
     load.close();
-} 
+}
